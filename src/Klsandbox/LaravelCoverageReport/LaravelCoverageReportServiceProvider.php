@@ -36,16 +36,17 @@ class LaravelCoverageReportServiceProvider extends ServiceProvider {
         $this->app->singleton('command.klsandbox.coveragerunstop', function($app) {
             return new CoverageRunStop();
         });
-
+        
         $this->app->singleton('command.klsandbox.coveragereport', function($app) {
-            return new CoverageReport($app['\Illuminate\Routing\Router']);
+            $router = $app['router'];
+            return new CoverageReport($router);
         });
 
         $this->commands('command.klsandbox.coveragerunstart');
         $this->commands('command.klsandbox.coveragerunstop');
         $this->commands('command.klsandbox.coveragereport');
         
-        $router = $this->app['\Illuminate\Routing\Router'];
+        $router = $this->app['router'];
         $router->middleware('recordroutecoverage', 'Klsandbox\LaravelCoverageReport\RecordRouteCoverage');
     }
 

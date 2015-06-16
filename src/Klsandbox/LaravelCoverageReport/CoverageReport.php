@@ -3,8 +3,6 @@
 namespace Klsandbox\LaravelCoverageReport;
 
 use Illuminate\Console\Command;
-use App\Models\CoverageRun;
-use App\Models\CoverageRecord;
 use Illuminate\Routing\Router;
 use ReflectionMethod;
 
