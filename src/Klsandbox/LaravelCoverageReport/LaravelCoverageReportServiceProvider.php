@@ -33,12 +33,12 @@ class LaravelCoverageReportServiceProvider extends ServiceProvider {
             return new CoverageRunStart();
         });
 
-        $this->app->singleton('command.klsandbox.coveragerunstart', function($app) {
+        $this->app->singleton('command.klsandbox.coveragerunstop', function($app) {
             return new CoverageRunStop();
         });
 
         $this->app->singleton('command.klsandbox.coveragereport', function($app) {
-            return new CoverageReport();
+            return new CoverageReport($app['\Illuminate\Routing\Router']);
         });
 
         $this->commands('command.klsandbox.coveragerunstart');
@@ -46,7 +46,7 @@ class LaravelCoverageReportServiceProvider extends ServiceProvider {
         $this->commands('command.klsandbox.coveragereport');
         
         $router = $this->app['\Illuminate\Routing\Router'];
-        $router->middlewhere('recordroutecoverage', 'Klsandbox\LaravelCoverageReport\RecordRouteCoverage');
+        $router->middleware('recordroutecoverage', 'Klsandbox\LaravelCoverageReport\RecordRouteCoverage');
     }
 
     /**
@@ -62,4 +62,14 @@ class LaravelCoverageReportServiceProvider extends ServiceProvider {
         ];
     }
 
+    public function boot() {
+        $this->publishes([
+            __DIR__ . '/../../../database/migrations/' => database_path('/migrations')
+                ], 'migrations');
+        
+        $this->publishes([
+            __DIR__ . '/../../../config/' => config_path()
+                ], 'config');
+
+    }
 }
