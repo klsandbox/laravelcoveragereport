@@ -14,16 +14,12 @@ class RecordRouteCoverage {
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next) {
-        $response = $next($request);
-
+    public function record($request) {
         $route = Route::getCurrentRoute();
 
         list($namespace, $name) = explode('@', $route->getActionName());
 
         $record = CoverageRecord::RecordEntry('Route', $namespace, $name);
-        
-        return $response;
     }
 
 }

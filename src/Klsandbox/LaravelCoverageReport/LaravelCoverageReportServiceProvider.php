@@ -36,7 +36,7 @@ class LaravelCoverageReportServiceProvider extends ServiceProvider {
         $this->app->singleton('command.klsandbox.coveragerunstop', function($app) {
             return new CoverageRunStop();
         });
-        
+
         $this->app->singleton('command.klsandbox.coveragereport', function($app) {
             $router = $app['router'];
             return new CoverageReport($router);
@@ -45,9 +45,11 @@ class LaravelCoverageReportServiceProvider extends ServiceProvider {
         $this->commands('command.klsandbox.coveragerunstart');
         $this->commands('command.klsandbox.coveragerunstop');
         $this->commands('command.klsandbox.coveragereport');
-        
-        $router = $this->app['router'];
-        $router->middleware('recordroutecoverage', 'Klsandbox\LaravelCoverageReport\RecordRouteCoverage');
+
+        app('events')->listen('kernel.handled', function($request, $response) {
+            $recorder = new RecordRouteCoverage();
+            $recorder->record($request);
+        });
     }
 
     /**
@@ -67,10 +69,10 @@ class LaravelCoverageReportServiceProvider extends ServiceProvider {
         $this->publishes([
             __DIR__ . '/../../../database/migrations/' => database_path('/migrations')
                 ], 'migrations');
-        
+
         $this->publishes([
             __DIR__ . '/../../../config/' => config_path()
                 ], 'config');
-
     }
+
 }

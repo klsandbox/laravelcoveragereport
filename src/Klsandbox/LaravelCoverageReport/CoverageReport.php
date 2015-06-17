@@ -68,7 +68,9 @@ class CoverageReport extends Command {
             $actions[$route->getActionName()] = 0;
         }
 
-        $records = CoverageRecord::where('coverage_run_id', '=', $run->id)
+        $records = CoverageRecord::
+                where('coverage_run_id', '=', $run->id)
+                ->where('category', '=', 'Route')
                 ->get();
 
         foreach ($records as $record) {
