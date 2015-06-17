@@ -3,7 +3,6 @@
 namespace Klsandbox\LaravelCoverageReport;
 
 use Route;
-use Closure;
 
 class RecordRouteCoverage {
 

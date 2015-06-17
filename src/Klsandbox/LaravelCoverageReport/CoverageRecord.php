@@ -4,7 +4,6 @@ namespace Klsandbox\LaravelCoverageReport;
 
 use Illuminate\Database\Eloquent\Model;
 use Config;
-use Klsandbox\SiteModel\Site;
 
 /**
  * App\Models\CoverageRecord

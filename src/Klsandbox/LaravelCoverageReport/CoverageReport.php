@@ -63,13 +63,16 @@ class CoverageReport extends Command {
             return;
         }
         
+        $runIds = [];
+        array_push($runIds, $run->id);
+        
         $actions = [];
         foreach ($this->routes as $route) {
             $actions[$route->getActionName()] = 0;
         }
 
         $records = CoverageRecord::
-                where('coverage_run_id', '=', $run->id)
+                whereIn('coverage_run_id', $runIds)
                 ->where('category', '=', 'Route')
                 ->get();
 
@@ -110,7 +113,7 @@ class CoverageReport extends Command {
             }
         }
         
-        $records = CoverageRecord::where('coverage_run_id', '=', $run->id)
+        $records = CoverageRecord::whereIn('coverage_run_id', $runIds)
                 ->where('category', '=', 'View')
                 ->get();
         

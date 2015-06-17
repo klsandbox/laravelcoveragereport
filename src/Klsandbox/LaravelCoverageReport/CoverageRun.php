@@ -3,7 +3,6 @@
 namespace Klsandbox\LaravelCoverageReport;
 
 use Illuminate\Database\Eloquent\Model;
-use Klsandbox\SiteModel\Site;
 use App;
 
 /**

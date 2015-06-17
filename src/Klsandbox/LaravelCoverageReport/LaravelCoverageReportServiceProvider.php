@@ -46,10 +46,12 @@ class LaravelCoverageReportServiceProvider extends ServiceProvider {
         $this->commands('command.klsandbox.coveragerunstop');
         $this->commands('command.klsandbox.coveragereport');
 
-        app('events')->listen('kernel.handled', function($request, $response) {
-            $recorder = new RecordRouteCoverage();
-            $recorder->record($request);
-        });
+        if (\Config::get('coverage.enabled')) {
+            app('events')->listen('kernel.handled', function($request, $response) {
+                $recorder = new RecordRouteCoverage();
+                $recorder->record($request);
+            });
+        }
     }
 
     /**
