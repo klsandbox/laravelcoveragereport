@@ -84,6 +84,8 @@ class CoverageReport extends Command {
         $total = count($actions);
         $covered = 0;
 
+        ksort($actions);
+
         foreach ($actions as $actionName => $count) {
             if (!$count) {
                 list($namespace, $name) = explode('@', $actionName);
@@ -124,6 +126,8 @@ class CoverageReport extends Command {
 
         $total = count($views);
         $covered = 0;
+
+        ksort($views);
         foreach ($views as $actionName => $count) {
             if (!$count) {
                 $this->comment("Uncovered view " . $actionName);
