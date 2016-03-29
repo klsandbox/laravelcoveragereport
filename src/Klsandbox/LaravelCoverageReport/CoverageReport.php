@@ -104,7 +104,9 @@ class CoverageReport extends Command {
         }
 
         $this->comment("Route Coverage $covered/$total");
-        
+
+//        dd();
+
         $views = [];
         foreach (\Config::get('view.paths') as $folder)
         {
@@ -112,6 +114,18 @@ class CoverageReport extends Command {
             foreach($finder->files() as $i)
             {
                $views[$i->getRelativePathname()] = 0;
+            }
+        }
+
+        foreach (view()->getFinder()->getHints() as $hint => $paths)
+        {
+            foreach ($paths as $path)
+            {
+                $finder = \Symfony\Component\Finder\Finder::create()->in($path);
+                foreach($finder->files() as $i)
+                {
+                    $views[$hint . '::' . $i->getRelativePathname()] = 0;
+                }
             }
         }
         
