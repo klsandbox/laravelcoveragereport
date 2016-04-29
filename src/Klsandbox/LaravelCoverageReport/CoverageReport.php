@@ -86,9 +86,18 @@ class CoverageReport extends Command {
 
         ksort($actions);
 
+        $ignoreRoutes = config('coverage.ignore_routes');
+
+        $ignoreRoutes = $ignoreRoutes ? $ignoreRoutes : [];
+
         foreach ($actions as $actionName => $count) {
             if (!$count) {
                 if ($actionName == 'Closure')
+                {
+                    continue;
+                }
+
+                if (in_array($actionName, $ignoreRoutes))
                 {
                     continue;
                 }
@@ -110,7 +119,8 @@ class CoverageReport extends Command {
 
         $this->comment("Route Coverage $covered/$total");
 
-//        dd();
+        $ignoreViews = config('coverage.ignore_views');
+        $ignoreViews = $ignoreViews ? $ignoreViews : [];
 
         $views = [];
         foreach (\Config::get('view.paths') as $folder)
@@ -129,7 +139,9 @@ class CoverageReport extends Command {
                 $finder = \Symfony\Component\Finder\Finder::create()->in($path);
                 foreach($finder->files() as $i)
                 {
-                    $views[$hint . '::' . $i->getRelativePathname()] = 0;
+                    $path = $hint . '::' . $i->getRelativePathname();
+
+                    $views[$path] = 0;
                 }
             }
         }
@@ -141,6 +153,11 @@ class CoverageReport extends Command {
         foreach ($records as $record)
         {
             $views[$record->name] = 1; 
+        }
+
+        foreach ($ignoreViews as $key)
+        {
+            unset($views[$key]);
         }
 
         $total = count($views);
