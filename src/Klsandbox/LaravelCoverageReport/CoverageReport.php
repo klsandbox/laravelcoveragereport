@@ -88,6 +88,11 @@ class CoverageReport extends Command {
 
         foreach ($actions as $actionName => $count) {
             if (!$count) {
+                if ($actionName == 'Closure')
+                {
+                    continue;
+                }
+
                 list($namespace, $name) = explode('@', $actionName);
                 if ($name == 'missingMethod') {
                     $method = new ReflectionMethod($namespace, $name);
