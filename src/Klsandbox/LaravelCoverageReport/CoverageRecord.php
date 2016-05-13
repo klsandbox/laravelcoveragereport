@@ -22,6 +22,7 @@ use Config;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CoverageRecord whereCategory($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CoverageRecord whereNamespace($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CoverageRecord whereName($value)
+ * @mixin \Eloquent
  */
 class CoverageRecord extends Model {
     //

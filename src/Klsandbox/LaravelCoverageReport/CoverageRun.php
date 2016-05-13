@@ -20,6 +20,7 @@ use App;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CoverageRun whereName($value)
  * @property boolean $active
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CoverageRun whereActive($value)
+ * @mixin \Eloquent
  */
 class CoverageRun extends Model {
     //
