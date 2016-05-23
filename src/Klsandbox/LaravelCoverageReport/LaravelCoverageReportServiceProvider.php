@@ -4,8 +4,8 @@ namespace Klsandbox\LaravelCoverageReport;
 
 use Illuminate\Support\ServiceProvider;
 
-class LaravelCoverageReportServiceProvider extends ServiceProvider {
-
+class LaravelCoverageReportServiceProvider extends ServiceProvider
+{
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -18,27 +18,30 @@ class LaravelCoverageReportServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function register() {
+    public function register()
+    {
         if (\Config::get('coverage.enabled')) {
             $app = $this->app;
             $resolver = $app['view.engine.resolver'];
-            $resolver->register('blade', function() use ($app) {
+            $resolver->register('blade', function () use ($app) {
                 $cache = $app['config']['view.compiled'];
                 $bladeCompiler = new CoverageBladeCompiler($app['files'], $cache);
+
                 return new \Illuminate\View\Engines\CompilerEngine($bladeCompiler, $app['files']);
             });
         }
 
-        $this->app->singleton('command.klsandbox.coveragerunstart', function($app) {
+        $this->app->singleton('command.klsandbox.coveragerunstart', function ($app) {
             return new CoverageRunStart();
         });
 
-        $this->app->singleton('command.klsandbox.coveragerunstop', function($app) {
+        $this->app->singleton('command.klsandbox.coveragerunstop', function ($app) {
             return new CoverageRunStop();
         });
 
-        $this->app->singleton('command.klsandbox.coveragereport', function($app) {
+        $this->app->singleton('command.klsandbox.coveragereport', function ($app) {
             $router = $app['router'];
+
             return new CoverageReport($router);
         });
 
@@ -47,7 +50,7 @@ class LaravelCoverageReportServiceProvider extends ServiceProvider {
         $this->commands('command.klsandbox.coveragereport');
 
         if (\Config::get('coverage.enabled')) {
-            app('events')->listen('kernel.handled', function($request, $response) {
+            app('events')->listen('kernel.handled', function ($request, $response) {
                 $recorder = new RecordRouteCoverage();
                 $recorder->record($request);
             });
@@ -59,7 +62,8 @@ class LaravelCoverageReportServiceProvider extends ServiceProvider {
      *
      * @return array
      */
-    public function provides() {
+    public function provides()
+    {
         return [
             'command.klsandbox.coveragerunstart',
             'command.klsandbox.coveragerunstop',
@@ -67,14 +71,14 @@ class LaravelCoverageReportServiceProvider extends ServiceProvider {
         ];
     }
 
-    public function boot() {
+    public function boot()
+    {
         $this->publishes([
-            __DIR__ . '/../../../database/migrations/' => database_path('/migrations')
+            __DIR__ . '/../../../database/migrations/' => database_path('/migrations'),
                 ], 'migrations');
 
         $this->publishes([
-            __DIR__ . '/../../../config/' => config_path()
+            __DIR__ . '/../../../config/' => config_path(),
                 ], 'config');
     }
-
 }

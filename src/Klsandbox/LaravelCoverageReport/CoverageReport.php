@@ -6,8 +6,8 @@ use Illuminate\Console\Command;
 use Illuminate\Routing\Router;
 use ReflectionMethod;
 
-class CoverageReport extends Command {
-
+class CoverageReport extends Command
+{
     /**
      * The console command name.
      *
@@ -36,7 +36,8 @@ class CoverageReport extends Command {
      */
     protected $routes;
 
-    public function __construct(Router $router) {
+    public function __construct(Router $router)
+    {
         parent::__construct();
 
         $this->router = $router;
@@ -48,24 +49,26 @@ class CoverageReport extends Command {
      *
      * @return void
      */
-    public function fire() {
+    public function fire()
+    {
         if (CoverageRun::getActiveRun()) {
-            $this->error("Error: Active runs exists. Stop run before running report");
+            $this->error('Error: Active runs exists. Stop run before running report');
+
             return;
         }
 
         $run = CoverageRun::orderBy('created_at', 'DESC')
                 ->first();
-        
-        if (!$run)
-        {
-            $this->error("No run found");
+
+        if (!$run) {
+            $this->error('No run found');
+
             return;
         }
-        
+
         $runIds = [];
         array_push($runIds, $run->id);
-        
+
         $actions = [];
         foreach ($this->routes as $route) {
             $actions[$route->getActionName()] = 0;
@@ -92,13 +95,11 @@ class CoverageReport extends Command {
 
         foreach ($actions as $actionName => $count) {
             if (!$count) {
-                if ($actionName == 'Closure')
-                {
+                if ($actionName == 'Closure') {
                     continue;
                 }
 
-                if (in_array($actionName, $ignoreRoutes))
-                {
+                if (in_array($actionName, $ignoreRoutes)) {
                     continue;
                 }
 
@@ -111,9 +112,9 @@ class CoverageReport extends Command {
                     }
                 }
 
-                $this->comment("Uncovered action " . $actionName);
+                $this->comment('Uncovered action ' . $actionName);
             } else {
-                $covered++;
+                ++$covered;
             }
         }
 
@@ -123,40 +124,33 @@ class CoverageReport extends Command {
         $ignoreViews = $ignoreViews ? $ignoreViews : [];
 
         $views = [];
-        foreach (\Config::get('view.paths') as $folder)
-        {
+        foreach (\Config::get('view.paths') as $folder) {
             $finder = \Symfony\Component\Finder\Finder::create()->in($folder);
-            foreach($finder->files() as $i)
-            {
-               $views[$i->getRelativePathname()] = 0;
+            foreach ($finder->files() as $i) {
+                $views[$i->getRelativePathname()] = 0;
             }
         }
 
-        foreach (view()->getFinder()->getHints() as $hint => $paths)
-        {
-            foreach ($paths as $path)
-            {
+        foreach (view()->getFinder()->getHints() as $hint => $paths) {
+            foreach ($paths as $path) {
                 $finder = \Symfony\Component\Finder\Finder::create()->in($path);
-                foreach($finder->files() as $i)
-                {
+                foreach ($finder->files() as $i) {
                     $path = $hint . '::' . $i->getRelativePathname();
 
                     $views[$path] = 0;
                 }
             }
         }
-        
+
         $records = CoverageRecord::whereIn('coverage_run_id', $runIds)
                 ->where('category', '=', 'View')
                 ->get();
-        
-        foreach ($records as $record)
-        {
-            $views[$record->name] = 1; 
+
+        foreach ($records as $record) {
+            $views[$record->name] = 1;
         }
 
-        foreach ($ignoreViews as $key)
-        {
+        foreach ($ignoreViews as $key) {
             unset($views[$key]);
         }
 
@@ -166,13 +160,12 @@ class CoverageReport extends Command {
         ksort($views);
         foreach ($views as $actionName => $count) {
             if (!$count) {
-                $this->comment("Uncovered view " . $actionName);
+                $this->comment('Uncovered view ' . $actionName);
             } else {
-                $covered++;
+                ++$covered;
             }
         }
-        
+
         $this->comment("View Coverage $covered/$total");
     }
-
 }

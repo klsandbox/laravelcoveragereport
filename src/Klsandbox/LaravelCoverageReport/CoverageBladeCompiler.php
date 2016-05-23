@@ -4,10 +4,8 @@ namespace Klsandbox\LaravelCoverageReport;
 
 class CoverageBladeCompiler extends \Illuminate\View\Compilers\BladeCompiler
 {
-
     public function compile($path = null)
     {
-
         if (str_contains($path, 'vendor/')) {
             preg_match('~/vendor/\w+/([^/]+)~', $path, $matches);
             preg_match('~/([^/]+)$~', $path, $matches2);
@@ -18,7 +16,7 @@ class CoverageBladeCompiler extends \Illuminate\View\Compilers\BladeCompiler
             $name = explode('/views/', $path)[1];
         }
 
-        $record = CoverageRecord::RecordEntry('View', "", $name);
+        $record = CoverageRecord::RecordEntry('View', '', $name);
 
         parent::compile($path);
     }
@@ -27,5 +25,4 @@ class CoverageBladeCompiler extends \Illuminate\View\Compilers\BladeCompiler
     {
         return true;
     }
-
 }

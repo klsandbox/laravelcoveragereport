@@ -15,6 +15,7 @@ use Config;
  * @property string $category
  * @property string $namespace
  * @property string $name
+ *
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CoverageRecord whereCoverageRunId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CoverageRecord whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CoverageRecord whereCreatedAt($value)
@@ -24,29 +25,28 @@ use Config;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CoverageRecord whereName($value)
  * @mixin \Eloquent
  */
-class CoverageRecord extends Model {
+class CoverageRecord extends Model
+{
     //
-    
+
     public static function RecordEntry($category, $namespace, $name)
     {
-        if (!Config::get('coverage.enabled'))
-        {
+        if (!Config::get('coverage.enabled')) {
             return;
         }
-        
+
         $run = CoverageRun::getActiveRun();
-        if (!$run)
-        {
+        if (!$run) {
             \App::abort(404, 'Coverage Run not found');
         }
-        
-        $record = new CoverageRecord();
+
+        $record = new self();
         $record->category = $category;
         $record->coverage_run_id = $run->id;
         $record->namespace = $namespace;
         $record->name = $name;
         $record->save();
-        
+
         return $record;
     }
 }
