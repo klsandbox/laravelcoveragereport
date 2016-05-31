@@ -15,7 +15,6 @@ use Config;
  * @property string $category
  * @property string $namespace
  * @property string $name
- *
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CoverageRecord whereCoverageRunId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CoverageRecord whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\CoverageRecord whereCreatedAt($value)
